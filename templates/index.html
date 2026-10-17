@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RumahCerdas — Prediksi Harga Rumah Berdasarkan Luas Tanah</title>
+    <meta name="description" content="Estimasi harga rumah berdasarkan luas bangunan menggunakan model regresi linear sederhana. Proyek akademik berbasis machine learning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="mainNav">
+        <div class="container-fluid" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <a class="navbar-brand" href="#">
+                <span class="brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+                    </svg>
+                </span>
+                RumahCerdas
+            </a>
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <a class="nav-link active" href="#hero">Beranda</a>
+                <a class="nav-link" href="#predict">Prediksi</a>
+                <a class="nav-link" href="#how-it-works">Cara Kerja</a>
+                <a class="nav-link" href="#about">Tentang</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="container" style="max-width: 800px; margin: 0 auto; padding: 0 1.5rem;">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Machine Learning · Regresi Linear
+            </div>
+            <h1 class="hero-title">
+                Prediksi <span class="highlight">Harga Rumah</span><br>
+                Berdasarkan Luas Tanah
+            </h1>
+            <p class="hero-subtitle">
+                Estimasi harga properti secara instan menggunakan model regresi linear yang dilatih dari data penjualan rumah King County, Washington.
+            </p>
+            <div class="hero-cta-group">
+                <a href="#predict" class="btn-glow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                    </svg>
+                    Mulai Prediksi
+                </a>
+                <a href="#about" class="btn-outline-glass">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                    </svg>
+                    Pelajari Model
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stats-bar-inner">
+            <div class="stat-item">
+                <span class="stat-value">{{ "{:.1%}".format(metrics.R2) }}</span>
+                <span class="stat-label">Akurasi R²</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">1</span>
+                <span class="stat-label">Fitur Input</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">21K+</span>
+                <span class="stat-label">Data Training</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Section -->
+    <section id="predict" class="section section-alt">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <h2 class="section-title">Prediksi <span class="highlight">Harga Rumah</span></h2>
+            <p class="section-subtitle">Masukkan luas bangunan untuk mendapatkan estimasi harga secara instan.</p>
+
+            <div style="max-width: 520px; margin: 0 auto;">
+                <div class="predict-card">
+                    <div class="card-header-custom">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="card-title-custom">Form Prediksi</h3>
+                            <p class="card-title-desc">Estimasi berbasis regresi linear</p>
+                        </div>
+                    </div>
+
+                    {% if load_error %}
+                        <div class="alert-custom alert-danger-custom">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 0.5rem; flex-shrink: 0;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.553.553 0 0 1-1.1 0z"/>
+                            </svg>
+                            {{ load_error }}
+                        </div>
+                    {% endif %}
+
+                    {% if error_msg %}
+                        <div class="alert-custom alert-warning-custom">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 0.5rem; flex-shrink: 0;">
+                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                            </svg>
+                            {{ error_msg }}
+                        </div>
+                    {% endif %}
+
+                    {% if result %}
+                        <div class="alert-custom alert-success-custom">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                                <span style="font-weight: 600;">Estimasi Berhasil</span>
+                            </div>
+                            <span class="result-price">{{ result }}</span>
+                            <div style="font-size: 0.85rem; margin-top: 0.35rem; opacity: 0.8;">
+                                Luas Bangunan: {{ input_sqft }} sqft
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="sqft_living" class="form-label-custom">Luas Bangunan (sqft)</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M1 2a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm1 13h2V9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6h1V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v11h1V2H2z"/>
+                                    </svg>
+                                </span>
+                                <input type="number" step="any"
+                                       class="form-input-custom"
+                                       id="sqft_living"
+                                       name="sqft_living"
+                                       placeholder="Contoh: 2000"
+                                       value="{{ request.form.sqft_living if request.method == 'POST' else '' }}"
+                                       required>
+                            </div>
+                            <div class="form-hint">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                </svg>
+                                Rentang yang disarankan: {{ sqft_min }} – {{ sqft_max }} sqft
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-predict" id="btn-predict">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                            Prediksi Harga
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Metrics -->
+    <section class="section">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <h2 class="section-title">Metrik <span class="highlight">Performa Model</span></h2>
+            <p class="section-subtitle">Hasil evaluasi model pada data pengujian (testing set).</p>
+
+            <div class="metric-grid fade-in-up stagger-children">
+                <div class="metric-card metric-r2 fade-in-up">
+                    <div class="metric-label">R² Score</div>
+                    <div class="metric-value">{{ "{:.2%}".format(metrics.R2) }}</div>
+                </div>
+                <div class="metric-card metric-mae fade-in-up">
+                    <div class="metric-label">Mean Absolute Error</div>
+                    <div class="metric-value">${{ "{:,.0f}".format(metrics.MAE) }}</div>
+                </div>
+                <div class="metric-card metric-rmse fade-in-up">
+                    <div class="metric-label">Root Mean Sq. Error</div>
+                    <div class="metric-value">${{ "{:,.0f}".format(metrics.RMSE) }}</div>
+                </div>
+            </div>
+            <p class="metric-note">Angka di atas berasal dari pengujian pada data testing, bukan jaminan prediksi pada data baru.</p>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section section-alt">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <h2 class="section-title">Cara <span class="highlight">Kerja</span></h2>
+            <p class="section-subtitle">Tiga langkah sederhana untuk mendapatkan estimasi harga rumah.</p>
+
+            <div class="steps-grid fade-in-up stagger-children">
+                <div class="step-card fade-in-up">
+                    <div class="step-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293z"/>
+                        </svg>
+                    </div>
+                    <div class="step-num">Langkah 1</div>
+                    <div class="step-title">Masukkan Luas</div>
+                    <div class="step-desc">Ketik nilai luas bangunan dalam satuan square feet (sqft) pada form prediksi.</div>
+                </div>
+                <div class="step-card fade-in-up">
+                    <div class="step-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5m.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 6.5 9z"/>
+                        </svg>
+                    </div>
+                    <div class="step-num">Langkah 2</div>
+                    <div class="step-title">Model Menghitung</div>
+                    <div class="step-desc">Algoritma regresi linear menghitung estimasi harga berdasarkan persamaan yang telah dipelajari.</div>
+                </div>
+                <div class="step-card fade-in-up">
+                    <div class="step-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                    </div>
+                    <div class="step-num">Langkah 3</div>
+                    <div class="step-title">Lihat Hasil</div>
+                    <div class="step-desc">Hasil estimasi harga ditampilkan secara instan dalam format mata uang USD.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Model -->
+    <section id="about" class="section">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <h2 class="section-title">Tentang <span class="highlight">Model</span></h2>
+            <p class="section-subtitle">Detail teknis tentang model machine learning yang digunakan.</p>
+
+            <div class="about-card fade-in-up">
+                <h4>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--accent-primary)" viewBox="0 0 16 16">
+                        <path d="M5.933.87a2.89 2.89 0 0 1 4.134 0l.622.638.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01z"/>
+                    </svg>
+                    Regresi Linear Sederhana
+                </h4>
+                <p>Model ini menggunakan <strong style="color: var(--text-primary);">Regresi Linear Sederhana</strong> dengan satu fitur yaitu <code>sqft_living</code> (luas bangunan). Dataset yang dipakai adalah <em>kc_house_data.csv</em> yang berisi data penjualan rumah di King County, Washington.</p>
+
+                <div class="equation-block">
+                    <strong>Persamaan:</strong><br>
+                    {{ model_equation }}
+                </div>
+
+                <p>Model hanya mempertimbangkan luas bangunan; faktor penting seperti lokasi, kondisi rumah, tahun dibangun, atau jumlah kamar <strong>tidak termasuk</strong> dalam perhitungan.</p>
+
+                <div class="disclaimer-tag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.553.553 0 0 1-1.1 0z"/>
+                    </svg>
+                    Hasil bersifat estimasi, bukan nilai jual yang pasti
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <p class="footer-text">
+                © 2026 <span class="footer-brand">RumahCerdas</span> — Proyek Akademik Prediksi Harga Rumah
+            </p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
